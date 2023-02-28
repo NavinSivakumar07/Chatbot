@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MathBot</title>
+    <meta charset="UTF-8">
+    <style>
+      #chatHistory {
+        height: 400px;
+        overflow-y: scroll;
+        border: 1px solid black;
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>MathBot</h1>
+    <p id="greeting"></p>
+    <div id="chatHistory"></div>
+    <label for="userInput">User:</label>
+    <input type="text" id="userInput">
+    <button id="askButton" onclick="getResponse()">Ask</button>
+    <script>
+      const MathBot = {
+        greeting: "Hello! I am a mathematical chatbot. How can I assist you with math today?",
+        farewell: "Goodbye! Thank you for using MathBot.",
+        responses: {
+          "What is the value of pi?": "The value of pi is approximately 3.14159.",
+          "What is the square root of 64?": "The square root of 64 is 8.",
+          "What is the sine of 30 degrees?": "The sine of 30 degrees is 0.5.",
+          "What is the cosine of 45 degrees?": "The cosine of 45 degrees is approximately 0.7071.",
+          "What is the tangent of 60 degrees?": "The tangent of 60 degrees is approximately 1.7321.",
+          "What is the value of e?": "The value of e is approximately 2.71828.",
+        },
+
+        calculateExpression: function(expression) {
+          try {
+            const result = eval(expression);
+            return String(result);
+          } catch {
+            return "Sorry, I am unable to evaluate that expression.";
+          }
+        },
+
+        getResponse: function() {
+          const userInput = document.getElementById("userInput").value;
+          const chatHistory = document.getElementById("chatHistory");
+          const botResponse = document.createElement("p");
+          const userMessage = document.createElement("p");
+          if (userInput.trim() === "") {
+            return;
+          } else if (userInput.toLowerCase().includes("hello") || userInput.toLowerCase().includes("hi")) {
+            botResponse.innerText = "Bot: Hi there! How can I assist you with math today?";
+          } else if (userInput.toLowerCase().includes("bye") || userInput.toLowerCase().includes("goodbye")) {
+            botResponse.innerText = "Bot: " + this.farewell;
+            document.getElementById("userInput").disabled = true;
+            document.getElementById("askButton").disabled = true;
+          } else if (userInput in this.responses) {
+            botResponse.innerText = "Bot: " + this.responses[userInput];
+          } else {
+            botResponse.innerText = "Bot: " + this.calculateExpression(userInput);
+          }
+          userMessage.innerText = "User: " + userInput;
+          chatHistory.appendChild(userMessage);
+          chatHistory.appendChild(botResponse);
+          chatHistory.scrollTop = chatHistory.scrollHeight;
+          document.getElementById("userInput").value = "";
+          document.getElementById("userInput").focus();
+        }
+      };
+
+      document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("greeting").innerText = MathBot.greeting;
+      });
+
+      function getResponse() {
+        MathBot.getResponse();
+      }
+    </script>
+  </body>
+</html>
